@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">WeatherPredictor</string>
+    <string name="location_icon">Location Icon</string>
+    <string name="tbilisi_georgia">Tbilisi, Georgia</string>
+    <string name="_27_c">27°C</string>
+    <string name="weather_icon">Weather Icon</string>
+    <string name="party_cloud">Party cloud</string>
+    <string name="weather_today">Weather Today</string>
+    <string name="_12_00_am">12:00 am</string>
+    <string name="_19_c">19°C</string>
+    <string name="next_5_days">Next 5 Days</string>
+    <string name="date">Date</string>
+    <string name="day">Day</string>
+    <string name="night">Night</string>
 </resources>
