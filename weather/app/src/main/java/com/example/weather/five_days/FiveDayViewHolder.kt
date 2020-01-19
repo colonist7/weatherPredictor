@@ -20,9 +20,21 @@ class FiveDayViewHolder (
 
     fun setItem(item: ItemFiveDays) {
         date.text = item.date
-        day_icon.setImageResource(R.drawable.img12)
-        day_temp.text = item.day_icon
-        night_icon.setImageResource(R.drawable.img11)
-        night_temp.text = item.night_icon
+        when(item.day_icon.toLowerCase()) {
+            "clouds" -> day_icon.setImageResource(R.drawable.clouds)
+            "clear" -> day_icon.setImageResource(R.drawable.clear)
+            "rain" -> day_icon.setImageResource(R.drawable.img4)
+            "drizzle" -> day_icon.setImageResource(R.drawable.img5)
+            "thunderstorm" -> day_icon.setImageResource(R.drawable.img6)
+        }
+        when(item.night_icon.toLowerCase()) {
+            "clouds" -> night_icon.setImageResource(R.drawable.clouds_night)
+            "clear" -> night_icon.setImageResource(R.drawable.clear_night)
+            "rain" -> night_icon.setImageResource(R.drawable.img4)
+            "drizzle" -> night_icon.setImageResource(R.drawable.img13)
+            "thunderstorm" -> day_icon.setImageResource(R.drawable.img6)
+        }
+        day_temp.text = item.day_temp
+        night_temp.text = item.night_temp
     }
 }

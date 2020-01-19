@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/main_gradient"
+    android:id="@+id/root"
     tools:context=".MainActivity">
 
 
@@ -54,8 +55,7 @@
             android:id="@+id/imageView2"
             android:layout_width="80dp"
             android:layout_height="79dp"
-            android:contentDescription="@string/weather"
-            android:src="@drawable/img1" />
+            android:contentDescription="@string/weather" />
 
         <TextView
             android:id="@+id/todayBig"
@@ -63,7 +63,6 @@
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:gravity="center_vertical"
-            android:text="@string/_27_c"
             android:textColor="#fff"
             android:textSize="60sp" />
     </LinearLayout>

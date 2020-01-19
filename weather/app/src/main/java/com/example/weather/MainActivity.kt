@@ -1,6 +1,10 @@
 package com.example.weather
 
 import android.accounts.AuthenticatorDescription
+import android.annotation.SuppressLint
+import android.app.Service
+import android.content.Context
+import android.content.IntentFilter
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -21,18 +25,28 @@ import kotlin.math.round
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.os.Build
+import android.util.Log
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.ITemToday.ItemToday
 import com.example.weather.ITemToday.ItemTodayAdapter
 import com.example.weather.five_days.FiveDayAdapter
 import com.example.weather.five_days.ItemFiveDays
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
+import java.io.IOException
+import java.lang.Exception
+import java.net.HttpURLConnection
 import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
-
     lateinit var json : WeatherX
     lateinit var  json2 : List<FiveDays>
     var list = mutableListOf<ItemToday>()
@@ -41,8 +55,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val getWeather = GetWeather()
+//        Toast.makeText(applicationContext,"No internet", Toast.LENGTH_SHORT).show()
 
+        if(applicationContext.isConnectedToNetwork()) {
+            Toast.makeText(applicationContext,"OK", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(applicationContext,"No internet", Toast.LENGTH_SHORT).show()
+        }
+
+        val getWeather = GetWeather()
 
         getWeather.execute("http://api.openweathermap.org/data/2.5/weather?q=Tbilisi&appid=e36d7e5af4e061f888ca4260e39a9e7d")
 
@@ -50,8 +71,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
+    @SuppressLint("ServiceCast")
+    fun Context.isConnectedToNetwork(): Boolean {
+        val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        return connectivityManager?.activeNetworkInfo?.isConnectedOrConnecting() ?: false
     }
 
     inner class GetWeather() : AsyncTask<String, Any, String>() {
@@ -60,12 +83,14 @@ class MainActivity : AppCompatActivity() {
             Thread.sleep(1000L)
             val url = URL(params[0])
             val urlConnection = url.openConnection()
-
             val stream = BufferedInputStream(urlConnection.inputStream)
             val bufferedReader = BufferedReader(InputStreamReader(stream))
             val builder = StringBuilder()
-
             var chunk = bufferedReader.readLine()
+
+
+
+
             while (chunk != null) {
                 builder.append(chunk)
                 chunk = bufferedReader.readLine()
@@ -144,10 +169,11 @@ class MainActivity : AppCompatActivity() {
 
         when (icon) {
             "clouds" -> bigImg.setImageResource(R.drawable.clouds)
+            "clear" -> bigImg.setImageResource(R.drawable.clear)
+            "rain" -> bigImg.setImageResource(R.drawable.img4)
+            "drizzle" -> bigImg.setImageResource(R.drawable.img5)
+            "thunderstorm" -> bigImg.setImageResource(R.drawable.img6)
         }
-
-
-
     }
 
 
@@ -155,7 +181,7 @@ class MainActivity : AppCompatActivity() {
     inner class GetFD() : AsyncTask<String, Any, String>() {
 
         override fun doInBackground(vararg params: String?): String {
-            Thread.sleep(3000L)
+            Thread.sleep(1000L)
             val url = URL(params[0])
             val urlConnection = url.openConnection()
 
@@ -301,7 +327,7 @@ class MainActivity : AppCompatActivity() {
                         list.add(
                             ItemToday(
                                 round(item.main.temp - 273.15).toString() + "°C",
-                                item.weather[0].icon,
+                                item.weather[0].main,
                                 h + " : 00"
                             )
                         )

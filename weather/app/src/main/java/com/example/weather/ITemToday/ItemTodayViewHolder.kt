@@ -14,8 +14,14 @@ class ItemTodayViewHolder (
     private val desc = view.findViewById<TextView>(R.id.status)
 
     fun setItem(item: ItemToday) {
+        when(item.src.toLowerCase()) {
+            "clouds" -> src.setImageResource(R.drawable.clouds)
+            "clear" -> src.setImageResource(R.drawable.clear)
+            "rain" -> src.setImageResource(R.drawable.img4)
+            "drizzle" -> src.setImageResource(R.drawable.img5)
+            "thunderstorm" -> src.setImageResource(R.drawable.img6)
+        }
         temp.text = item.temp
-        src.setImageResource(R.drawable.img15)
         desc.text = item.desc
     }
 }
