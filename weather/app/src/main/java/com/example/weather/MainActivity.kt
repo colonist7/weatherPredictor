@@ -26,6 +26,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.ITemToday.ItemToday
 import com.example.weather.ITemToday.ItemTodayAdapter
+import com.example.weather.five_days.FiveDayAdapter
+import com.example.weather.five_days.ItemFiveDays
 import kotlin.concurrent.thread
 
 
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var json : WeatherX
     lateinit var  json2 : List<FiveDays>
     var list = mutableListOf<ItemToday>()
+    var list2 = mutableListOf<ItemFiveDays>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -260,13 +263,15 @@ class MainActivity : AppCompatActivity() {
         return list
     }
 
+    var oneDay = ItemFiveDays("","","","","")
+
     fun setFD(obj : List<FiveDays>) {
         val curDay = getTimeObject(obj[0].dt_txt).day
             var recyclerView = findViewById(R.id.weather_today_block) as RecyclerView
+            var fiveDaysView = findViewById(R.id.five_day_container) as RecyclerView
             var j = 0
             var current = 0
             for (item in obj) {
-                println(item)
                 val date = getTimeObject(item.dt_txt)
                 var h = ""
                 if(date.hours.toString().length == 1) {
@@ -274,52 +279,82 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     h = date.hours.toString()
                 }
-
+                println(current)
                 if(current == 9) {
                     h = "12"
                 }
 
-                if(curDay != date.day || j == 5) {
-                    break
+                if(curDay != date.day) {
+                    oneDay.date = date.day.toString() + " " + date.month
+                    if(h.equals("12")) {
+                        oneDay.day_icon = item.weather[0].main
+                        oneDay.day_temp = round(item.main.temp - 273.15).toString()
+                    }
+                    else if(h.equals("21")) {
+                        oneDay.night_icon = item.weather[0].main
+                        oneDay.night_temp = round(item.main.temp - 273.15).toString()
+                        list2.add(oneDay)
+                        oneDay = ItemFiveDays("", "", "", "","")
+                    }
+                } else {
+                    if( j != 5) {
+                        list.add(
+                            ItemToday(
+                                round(item.main.temp - 273.15).toString() + "°C",
+                                item.weather[0].icon,
+                                h + " : 00"
+                            )
+                        )
+                    }
                 }
-                list.add(
-                    ItemToday(
-                        round(item.main.temp - 273.15).toString() + "°C",
-                        item.weather[0].icon,
-                        h + " : 00"
-                    )
-                )
                 current = getTimeObject(item.dt_txt).hours
                 j++
             }
-            println(list)
-
 
             val adapter = ItemTodayAdapter(list)
+            val adapter2 = FiveDayAdapter(list2)
 
-            println(adapter)
+            recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            fiveDaysView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        recyclerView.adapter = adapter
+            recyclerView.adapter = adapter
+            fiveDaysView.adapter = adapter2
 
         }
 
     data class dateObject (
         val year : Int,
-        val month : Int,
+        val month : String,
         val day : Int,
         val hours : Int,
         val minutes : Int
     )
 
-    fun getTimeObject (str : String = "2020-01-19 03:00:00") : dateObject {
+    fun getTimeObject (str : String) : dateObject {
         val date = SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(str)
         val year = date.year + 1900
-        val month = date.month + 1
-        val day = date.day
+        val month = date.month
+        val day = date.date
         val hours = date.hours
         val minutes = date.minutes
-        return dateObject(year,month,day,hours,minutes)
+
+        var word = ""
+
+        when(month) {
+            0 -> word = "January"
+            1 -> word = "February"
+            2 -> word = "March"
+            3 -> word = "April"
+            4 -> word = "May"
+            5 -> word = "June"
+            6 -> word = "July"
+            7 -> word = "August"
+            8 -> word = "September"
+            9 -> word = "October"
+            10 -> word ="November"
+            11 -> word = "December"
+        }
+        return dateObject(year,word,day,hours,minutes)
     }
 }
