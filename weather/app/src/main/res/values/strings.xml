@@ -12,4 +12,5 @@
     <string name="date">Date</string>
     <string name="day">Day</string>
     <string name="night">Night</string>
+    <string name="weather">weather</string>
 </resources>
