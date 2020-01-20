@@ -314,11 +314,11 @@ class MainActivity : AppCompatActivity() {
                     oneDay.date = date.day.toString() + " " + date.month
                     if(h.equals("12")) {
                         oneDay.day_icon = item.weather[0].main
-                        oneDay.day_temp = round(item.main.temp - 273.15).toString()
+                        oneDay.day_temp = round(item.main.temp - 273.15).toString() + "°C"
                     }
                     else if(h.equals("21")) {
                         oneDay.night_icon = item.weather[0].main
-                        oneDay.night_temp = round(item.main.temp - 273.15).toString()
+                        oneDay.night_temp = round(item.main.temp - 273.15).toString() + "°C"
                         list2.add(oneDay)
                         oneDay = ItemFiveDays("", "", "", "","")
                     }
